@@ -137,7 +137,8 @@ function ProductForm() {
               <input
                 className="product-form-input"
                 id="price"
-                type="text"
+                type="number"
+                min={0}
                 placeholder="Retail Price"
                 value={newProduct.retailPrice}
                 onChange={(e) =>
