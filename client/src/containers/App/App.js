@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import Navbar from '../Navbar/Navbar';
-import Home from '../Home/Home';
-import ProductList from '../ProductList/ProductList';
-import ProductForm from '../ProductForm/ProductForm';
-import Checkout from '../Checkout/Checkout';
-import * as checkoutApi from '../../services/checkoutApi';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import React, { Component } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Navbar from "../Navbar/Navbar";
+import Home from "../Home/Home";
+import ProductList from "../ProductList/ProductList";
+import ProductForm from "../ProductForm/ProductForm";
+import Checkout from "../Checkout/Checkout";
+import * as checkoutApi from "../../services/checkoutApi";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
 
 class App extends Component {
   constructor() {
@@ -49,14 +49,26 @@ class App extends Component {
         <section className="app-wrapper">
           <Navbar checkoutCount={checkoutCount} />
           <article className="app-container">
-            <Route exact path="/" component={Home} />
-            <Route path="/my-products">
-              <ProductList updateCheckoutCount={updateCheckoutCount} />
-            </Route>
-            <Route exact path="/new-product-form" component={ProductForm} />
-            <Route exact path="/checkout">
-              <Checkout updateCheckoutCount={updateCheckoutCount} />
-            </Route>
+            <Routes>
+              <Route exact="true" path="/" element={<Home />} />
+              <Route
+                path="/my-products"
+                element={
+                  <ProductList updateCheckoutCount={updateCheckoutCount} />
+                }
+              />
+
+              <Route
+                exact="true"
+                path="/new-product-form"
+                element={<ProductForm />}
+              />
+              <Route
+                exact="true"
+                path="/checkout"
+                element={<Checkout updateCheckoutCount={updateCheckoutCount} />}
+              />
+            </Routes>
           </article>
         </section>
       </Router>
