@@ -1,79 +1,71 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Navbar from "../Navbar/Navbar";
-import Home from "../Home/Home";
-import ProductList from "../ProductList/ProductList";
-import ProductForm from "../ProductForm/ProductForm";
-import Checkout from "../Checkout/Checkout";
-import * as checkoutApi from "../../services/checkoutApi";
 import "react-toastify/dist/ReactToastify.css";
+import * as checkoutApi from "../../services/checkoutApi";
+import Checkout from "../Checkout/Checkout";
+import Home from "../Home/Home";
+import Navbar from "../Navbar/Navbar";
+import ProductForm from "../ProductForm/ProductForm";
+import ProductList from "../ProductList/ProductList";
 import "./App.css";
+import { FETCH_CHECKOUT_COUNT_ERROR } from "../../constants/constants";
 
-class App extends Component {
-  constructor() {
-    super();
+function App() {
+  const [checkoutCount, setCheckoutCount] = useState(0);
+  const [cartUpdated, setCartUpdated] = useState(false);
 
-    this.state = {
-      checkoutCount: 0,
-      loading: true,
-      error: false,
-    };
+  useEffect(() => {
+    async function fetchCheckoutItems() {
+      const checkoutItemsCount = await checkoutApi.getCheckoutCount();
+
+      if (
+        Number(checkoutItemsCount) ||
+        checkoutItemsCount === 0 ||
+        checkoutItemsCount === FETCH_CHECKOUT_COUNT_ERROR
+      ) {
+        setCheckoutCount(checkoutItemsCount);
+        setCartUpdated(false);
+      }
+    }
+
+    fetchCheckoutItems();
+  }, [cartUpdated]);
+
+  async function updateCheckoutCount() {
+    setCartUpdated(true);
   }
 
-  componentDidMount = async () => {
-    const checkoutCount = await checkoutApi.getCheckoutCount();
-    if (Number(checkoutCount) || checkoutCount === 0) {
-      this.setState({ checkoutCount, loading: false, error: false });
-    } else {
-      this.setState({ loading: false, error: true });
-    }
-  };
+  return (
+    <Router>
+      <ToastContainer />
+      <section className="app-wrapper">
+        <Navbar checkoutCount={checkoutCount} />
+        <article className="app-container">
+          <Routes>
+            <Route exact="true" path="/" element={<Home />} />
+            <Route
+              path="/my-products"
+              element={
+                <ProductList updateCheckoutCount={updateCheckoutCount} />
+              }
+            />
 
-  updateCheckoutCount = async () => {
-    const checkoutCount = await checkoutApi.getCheckoutCount();
-    if (Number(checkoutCount) || checkoutCount === 0) {
-      this.setState({ checkoutCount, loading: false, error: false });
-    } else {
-      this.setState({ loading: false, error: true });
-    }
-  };
-
-  render() {
-    const { checkoutCount } = this.state;
-    const { updateCheckoutCount } = this;
-
-    return (
-      <Router>
-        <ToastContainer />
-        <section className="app-wrapper">
-          <Navbar checkoutCount={checkoutCount} />
-          <article className="app-container">
-            <Routes>
-              <Route exact="true" path="/" element={<Home />} />
-              <Route
-                path="/my-products"
-                element={
-                  <ProductList updateCheckoutCount={updateCheckoutCount} />
-                }
-              />
-
-              <Route
-                exact="true"
-                path="/new-product-form"
-                element={<ProductForm />}
-              />
-              <Route
-                exact="true"
-                path="/checkout"
-                element={<Checkout updateCheckoutCount={updateCheckoutCount} />}
-              />
-            </Routes>
-          </article>
-        </section>
-      </Router>
-    );
-  }
+            <Route
+              exact="true"
+              path="/new-product-form"
+              element={<ProductForm />}
+            />
+            <Route
+              exact="true"
+              path="/checkout"
+              element={<Checkout updateCheckoutCount={updateCheckoutCount} />}
+            />
+          </Routes>
+        </article>
+      </section>
+    </Router>
+  );
 }
 
 export default App;
