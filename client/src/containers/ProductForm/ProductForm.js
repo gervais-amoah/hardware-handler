@@ -17,9 +17,11 @@ const defaultsForNewProduct = {
   description: "",
   retailPrice: 0,
 };
+
 function ProductForm() {
   const [newProduct, setNewProduct] = useState({ ...defaultsForNewProduct });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ function ProductForm() {
       if (departments !== FETCH_DEPARTMENT_DATA_ERROR) {
         setDepartments(departments);
       } else {
-        toast.error(`${departments} Please try adding this product later.`);
+        setError(true);
       }
 
       setLoading(false);
@@ -75,7 +77,13 @@ function ProductForm() {
     <div>
       <h1 className="product-form-header">Add A New Product</h1>
       {loading && <Loader message="Loading new product form data..." />}
-      {!loading && (
+      {error && (
+        <p className="product-form">
+          {FETCH_DEPARTMENT_DATA_ERROR} Please refresh the page or try again
+          later
+        </p>
+      )}
+      {!loading && !error && (
         <form className="product-form">
           <ul className="product-form-list">
             <li className="product-form-list-item">
