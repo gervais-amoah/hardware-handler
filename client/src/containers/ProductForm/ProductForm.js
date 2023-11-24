@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader/Loader";
 import {
   ADD_NEW_PRODUCT_ERROR,
   ADD_NEW_PRODUCT_SUCCESS,
-  FETCH_DEPARTMENT_DATA_ERROR,
 } from "../../constants/constants";
-import * as departmentApi from "../../services/departmentApi";
+import { useDepartments } from "../../hooks/useDepartments";
 import * as productApi from "../../services/productApi";
 import "./ProductForm.css";
-import { useDepartments } from "../../hooks/useDepartments";
 
 const defaultsForNewProduct = {
   departmentId: null,
