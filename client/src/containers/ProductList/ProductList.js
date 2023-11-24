@@ -14,15 +14,16 @@ import * as departmentApi from "../../services/departmentApi";
 import * as productApi from "../../services/productApi";
 import "./ProductList.css";
 import FilterSection from "../../components/FilterSection/FilterSection";
+import { useDepartments } from "../../hooks/useDepartments";
 
 function ProductList({ updateCheckoutCount }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [departmentsError, setDepartmentsError] = useState(false);
+  // const [departmentsError, setDepartmentsError] = useState(false);
   const [productsError, setProductsError] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [filtersByBrand, setFiltersByBrand] = useState([]);
-  const [filtersByDepartment, setFiltersByDepartment] = useState([]);
+  // const [filtersByDepartment, setFiltersByDepartment] = useState([]);
   const [activeFilter, setActiveFilter] = useState([]);
 
   useEffect(() => {
@@ -53,28 +54,8 @@ function ProductList({ updateCheckoutCount }) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    async function fetchAllDepartments() {
-      try {
-        const departments = await departmentApi.getAllDepartments();
-
-        if (departments !== FETCH_DEPARTMENT_DATA_ERROR) {
-          setFiltersByDepartment(departments);
-          setDepartmentsError(false);
-        } else {
-          setErrMsg(departments);
-          setDepartmentsError(true);
-        }
-      } catch (error) {
-        setErrMsg(error.message);
-        setDepartmentsError(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchAllDepartments();
-  }, []);
+  const [filtersByDepartment, [loadingDepartments, departmentsError]] =
+    useDepartments();
 
   useEffect(() => {
     if (productsError && departmentsError) {
@@ -125,6 +106,7 @@ function ProductList({ updateCheckoutCount }) {
         <FilterSection
           title="Filter by Department"
           filters={filtersByDepartment}
+          loading={loadingDepartments}
           error={departmentsError}
           activeFilter={activeFilter}
           onFilterChange={onFilterChange}

@@ -19,26 +19,8 @@ const defaultsForNewProduct = {
 
 function ProductForm() {
   const [newProduct, setNewProduct] = useState({ ...defaultsForNewProduct });
-  // const [error, setError] = useState(null);
-  // const [departments, setDepartments] = useState([]);
 
   const [departments, [loading, error]] = useDepartments();
-
-  // useEffect(() => {
-  //   async function fetchAllDepartments() {
-  //     const departments = await departmentApi.getAllDepartments();
-
-  //     if (departments !== FETCH_DEPARTMENT_DATA_ERROR) {
-  //       setDepartments(departments);
-  //     } else {
-  //       setError(departments);
-  //     }
-
-  //     setLoading(false);
-  //   }
-
-  //   fetchAllDepartments();
-  // }, []);
 
   function onChange(propName, val) {
     const updatedProduct = { ...newProduct };

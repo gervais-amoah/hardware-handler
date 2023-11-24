@@ -1,6 +1,7 @@
 function FilterSection({
   title,
   filters,
+  loading,
   error,
   activeFilter,
   onFilterChange,
@@ -9,6 +10,7 @@ function FilterSection({
     <>
       <p className="filter-title">{title}</p>
       <div className="filter-data">
+        {loading && <p>Loading... </p>}
         {error ? (
           <p>{`Cannot load ${title.toLowerCase()} filters.`}</p>
         ) : (
