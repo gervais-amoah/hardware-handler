@@ -9,6 +9,7 @@ import {
 import * as departmentApi from "../../services/departmentApi";
 import * as productApi from "../../services/productApi";
 import "./ProductForm.css";
+import { useDepartments } from "../../hooks/useDepartments";
 
 const defaultsForNewProduct = {
   departmentId: null,
@@ -20,25 +21,26 @@ const defaultsForNewProduct = {
 
 function ProductForm() {
   const [newProduct, setNewProduct] = useState({ ...defaultsForNewProduct });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [departments, setDepartments] = useState([]);
+  // const [error, setError] = useState(null);
+  // const [departments, setDepartments] = useState([]);
 
-  useEffect(() => {
-    async function fetchAllDepartments() {
-      const departments = await departmentApi.getAllDepartments();
+  const [departments, [loading, error]] = useDepartments();
 
-      if (departments !== FETCH_DEPARTMENT_DATA_ERROR) {
-        setDepartments(departments);
-      } else {
-        setError(true);
-      }
+  // useEffect(() => {
+  //   async function fetchAllDepartments() {
+  //     const departments = await departmentApi.getAllDepartments();
 
-      setLoading(false);
-    }
+  //     if (departments !== FETCH_DEPARTMENT_DATA_ERROR) {
+  //       setDepartments(departments);
+  //     } else {
+  //       setError(departments);
+  //     }
 
-    fetchAllDepartments();
-  }, []);
+  //     setLoading(false);
+  //   }
+
+  //   fetchAllDepartments();
+  // }, []);
 
   function onChange(propName, val) {
     const updatedProduct = { ...newProduct };
@@ -70,7 +72,6 @@ function ProductForm() {
     } else {
       toast.error(`${addProduct} Please refresh the page and try again.`);
     }
-    setLoading(false);
   }
 
   return (
@@ -79,8 +80,7 @@ function ProductForm() {
       {loading && <Loader message="Loading new product form data..." />}
       {error && (
         <p className="product-form">
-          {FETCH_DEPARTMENT_DATA_ERROR} Please refresh the page or try again
-          later
+          {error} Please refresh the page or try again later
         </p>
       )}
       {!loading && !error && (
