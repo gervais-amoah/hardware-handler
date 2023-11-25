@@ -9,21 +9,18 @@ import {
   REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
 } from "../../constants/constants";
 import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
-import { useCheckout } from "../../hooks/useCheckout";
 import * as checkoutApi from "../../services/checkoutApi";
 import "./Checkout.css";
 
 function Checkout() {
   const [loading, setLoading] = useState(true);
 
-  const { checkoutItems, checkoutCount, setCheckoutItems, error } =
-    useCheckout();
-
   const checkoutItemsContext = useContext(CheckoutItemsContext);
 
   useEffect(() => {
-    if (checkoutCount > 0 || error) setLoading(false);
-  }, [checkoutCount, error]);
+    if (checkoutItemsContext.checkoutCount > 0 || checkoutItemsContext.error)
+      setLoading(false);
+  }, [checkoutItemsContext.checkoutCount, checkoutItemsContext.error]);
 
   async function removeItemFromCheckout(id) {
     setLoading(true);
@@ -33,7 +30,7 @@ function Checkout() {
     );
 
     if (remainingCheckoutItems !== REMOVE_PRODUCT_FROM_CHECKOUT_ERROR) {
-      setCheckoutItems(remainingCheckoutItems);
+      checkoutItemsContext.setCheckoutItems(remainingCheckoutItems);
       checkoutItemsContext.updateCheckoutCount();
       toast.success(PRODUCT_REMOVED_FROM_CHECKOUT_SUCCESS);
     } else {
@@ -48,39 +45,42 @@ function Checkout() {
       <h1 className="checkout-title">Checkout Page</h1>
       <div>
         {loading && <Loader message="Fetching items to checkout..." />}
-        {error && (
+        {checkoutItemsContext.error && (
           <p className="checkout-message">
             {FETCH_CHECKOUT_PRODUCTS_ERROR} Please refresh the page or try again
             later.
           </p>
         )}
-        {!loading & !error && checkoutItems.length && (
-          <div>
-            <div className="checkout-header">
-              <div>Product Information</div>
-              <div>Suggested Retail Price</div>
-              <div>Update Checkout</div>
+        {!loading & !checkoutItemsContext.error &&
+          checkoutItemsContext.checkoutCount && (
+            <div>
+              <div className="checkout-header">
+                <div>Product Information</div>
+                <div>Suggested Retail Price</div>
+                <div>Update Checkout</div>
+              </div>
+              <ul className="checkout-list-wrapper">
+                {checkoutItemsContext.checkoutItems.map((item) => (
+                  <CheckoutItem
+                    key={item.id}
+                    item={item}
+                    removeItemFromCheckout={removeItemFromCheckout}
+                  />
+                ))}
+              </ul>
             </div>
-            <ul className="checkout-list-wrapper">
-              {checkoutItems.map((item) => (
-                <CheckoutItem
-                  key={item.id}
-                  item={item}
-                  removeItemFromCheckout={removeItemFromCheckout}
-                />
-              ))}
-            </ul>
-          </div>
-        )}
-        {!loading && !error && !checkoutItems.length && (
-          <p className="checkout-message">
-            The checkout is currently empty. Add some items from the&nbsp;
-            <NavLink className="page-link" to="/my-products">
-              My Products
-            </NavLink>
-            &nbsp;page.
-          </p>
-        )}
+          )}
+        {!loading &&
+          !checkoutItemsContext.error &&
+          !checkoutItemsContext.checkoutCount && (
+            <p className="checkout-message">
+              The checkout is currently empty. Add some items from the&nbsp;
+              <NavLink className="page-link" to="/my-products">
+                My Products
+              </NavLink>
+              &nbsp;page.
+            </p>
+          )}
       </div>
     </div>
   );
