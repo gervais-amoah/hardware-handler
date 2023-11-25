@@ -23,6 +23,8 @@ function Checkout({ updateCheckoutCount }) {
   }, [checkoutCount, error]);
 
   async function removeItemFromCheckout(id) {
+    setLoading(true);
+
     const remainingCheckoutItems = await checkoutApi.removeProductFromCheckout(
       id
     );
