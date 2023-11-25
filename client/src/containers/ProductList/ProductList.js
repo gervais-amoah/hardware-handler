@@ -7,6 +7,7 @@ import {
   MULTIPLE_ERRORS,
   PRODUCT_ADDED_TO_CHECKOUT_SUCCESS,
 } from "../../constants/constants";
+import { CheckoutFunctionContext } from "../../context/CheckoutFunctionContext";
 import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
 import { useDepartments } from "../../hooks/useDepartments";
 import { useProducts } from "../../hooks/useProducts";
@@ -98,13 +99,11 @@ function ProductList() {
         {loadingProducts && <Loader message="Loading product list..." />}
         <div className="product-list-product-wrapper">
           {!loadingProducts && !productsError && filteredList.length > 0 ? (
-            filteredList.map((product) => (
-              <Product
-                key={product.id}
-                product={product}
-                addItemToCheckout={addItemToCheckout}
-              />
-            ))
+            <CheckoutFunctionContext.Provider value={{ addItemToCheckout }}>
+              {filteredList.map((product) => (
+                <Product key={product.id} product={product} />
+              ))}
+            </CheckoutFunctionContext.Provider>
           ) : !loadingProducts && !productsError && !departmentsError ? (
             <p className="product-list-message">
               There are no products that match your filters. Please clear some
