@@ -18,7 +18,6 @@ function ProductList({ updateCheckoutCount }) {
 
   const [products, filtersByBrand, [loadingProducts, productsError]] =
     useProducts();
-
   const [filtersByDepartment, [loadingDepartments, departmentsError]] =
     useDepartments();
 

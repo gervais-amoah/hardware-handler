@@ -10,28 +10,17 @@ import {
 } from "../../constants/constants";
 import * as checkoutApi from "../../services/checkoutApi";
 import "./Checkout.css";
+import { useCheckout } from "../../hooks/useCheckout";
 
 function Checkout({ updateCheckoutCount }) {
-  const [checkoutItems, setCheckoutItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+
+  const { checkoutItems, checkoutCount, setCheckoutItems, error } =
+    useCheckout();
 
   useEffect(() => {
-    async function fetchCheckoutItems() {
-      const allCheckoutItems = await checkoutApi.getAllCheckoutItems();
-
-      if (allCheckoutItems !== FETCH_CHECKOUT_PRODUCTS_ERROR) {
-        setCheckoutItems(allCheckoutItems);
-        setError(false);
-      } else {
-        setError(true);
-      }
-
-      setLoading(false);
-    }
-
-    fetchCheckoutItems();
-  }, []);
+    if (checkoutCount > 0 || error) setLoading(false);
+  }, [checkoutCount, error]);
 
   async function removeItemFromCheckout(id) {
     const remainingCheckoutItems = await checkoutApi.removeProductFromCheckout(
