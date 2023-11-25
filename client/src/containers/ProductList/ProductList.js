@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import FilterSection from "../../components/FilterSection/FilterSection";
 import Loader from "../../components/Loader/Loader";
@@ -7,14 +7,17 @@ import {
   MULTIPLE_ERRORS,
   PRODUCT_ADDED_TO_CHECKOUT_SUCCESS,
 } from "../../constants/constants";
+import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
 import { useDepartments } from "../../hooks/useDepartments";
 import { useProducts } from "../../hooks/useProducts";
 import * as checkoutApi from "../../services/checkoutApi";
 import "./ProductList.css";
 
-function ProductList({ updateCheckoutCount }) {
+function ProductList() {
   const [errMsg, setErrMsg] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
+
+  const checkoutItemsContext = useContext(CheckoutItemsContext);
 
   const [products, filtersByBrand, [loadingProducts, productsError]] =
     useProducts();
@@ -31,7 +34,7 @@ function ProductList({ updateCheckoutCount }) {
     try {
       const productAdded = await checkoutApi.addItemToCheckout(product);
       if (productAdded === PRODUCT_ADDED_TO_CHECKOUT_SUCCESS) {
-        updateCheckoutCount();
+        checkoutItemsContext.updateCheckoutCount();
         toast.success(PRODUCT_ADDED_TO_CHECKOUT_SUCCESS);
       } else {
         toast.error(productAdded);

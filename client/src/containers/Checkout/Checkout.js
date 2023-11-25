@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import CheckoutItem from "../../components/CheckoutItem/CheckoutItem";
@@ -8,15 +8,18 @@ import {
   PRODUCT_REMOVED_FROM_CHECKOUT_SUCCESS,
   REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
 } from "../../constants/constants";
+import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
+import { useCheckout } from "../../hooks/useCheckout";
 import * as checkoutApi from "../../services/checkoutApi";
 import "./Checkout.css";
-import { useCheckout } from "../../hooks/useCheckout";
 
-function Checkout({ updateCheckoutCount }) {
+function Checkout() {
   const [loading, setLoading] = useState(true);
 
   const { checkoutItems, checkoutCount, setCheckoutItems, error } =
     useCheckout();
+
+  const checkoutItemsContext = useContext(CheckoutItemsContext);
 
   useEffect(() => {
     if (checkoutCount > 0 || error) setLoading(false);
@@ -31,7 +34,7 @@ function Checkout({ updateCheckoutCount }) {
 
     if (remainingCheckoutItems !== REMOVE_PRODUCT_FROM_CHECKOUT_ERROR) {
       setCheckoutItems(remainingCheckoutItems);
-      updateCheckoutCount();
+      checkoutItemsContext.updateCheckoutCount();
       toast.success(PRODUCT_REMOVED_FROM_CHECKOUT_SUCCESS);
     } else {
       toast.error(remainingCheckoutItems);
