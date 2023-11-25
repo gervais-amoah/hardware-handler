@@ -1,58 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import FilterSection from "../../components/FilterSection/FilterSection";
 import Loader from "../../components/Loader/Loader";
 import Product from "../../components/Product/Product";
 import {
-  FETCH_DEPARTMENT_DATA_ERROR,
-  FETCH_PRODUCT_DATA_ERROR,
   MULTIPLE_ERRORS,
   PRODUCT_ADDED_TO_CHECKOUT_SUCCESS,
 } from "../../constants/constants";
-import { formatFilters } from "../../helpers/formatFilters";
-import * as checkoutApi from "../../services/checkoutApi";
-import * as departmentApi from "../../services/departmentApi";
-import * as productApi from "../../services/productApi";
-import "./ProductList.css";
-import FilterSection from "../../components/FilterSection/FilterSection";
 import { useDepartments } from "../../hooks/useDepartments";
+import { useProducts } from "../../hooks/useProducts";
+import * as checkoutApi from "../../services/checkoutApi";
+import "./ProductList.css";
 
 function ProductList({ updateCheckoutCount }) {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const [departmentsError, setDepartmentsError] = useState(false);
-  const [productsError, setProductsError] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const [filtersByBrand, setFiltersByBrand] = useState([]);
-  // const [filtersByDepartment, setFiltersByDepartment] = useState([]);
   const [activeFilter, setActiveFilter] = useState([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const allProducts = await productApi.getAllProducts();
-
-        if (allProducts !== FETCH_PRODUCT_DATA_ERROR) {
-          const filteredByBrand = formatFilters(allProducts, "brand").sort(
-            (a, b) => a.name.localeCompare(b.name)
-          );
-
-          setProducts(allProducts);
-          setFiltersByBrand(filteredByBrand);
-          setProductsError(false);
-        } else {
-          setErrMsg(allProducts);
-          setProductsError(true);
-        }
-      } catch (error) {
-        setErrMsg(error.message);
-        setProductsError(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
+  const [products, filtersByBrand, [loadingProducts, productsError]] =
+    useProducts();
 
   const [filtersByDepartment, [loadingDepartments, departmentsError]] =
     useDepartments();
@@ -60,7 +25,7 @@ function ProductList({ updateCheckoutCount }) {
   useEffect(() => {
     if (productsError && departmentsError) {
       setErrMsg(MULTIPLE_ERRORS);
-    }
+    } else if (productsError) setErrMsg(productsError);
   }, [productsError, departmentsError]);
 
   async function addItemToCheckout(product) {
@@ -114,6 +79,7 @@ function ProductList({ updateCheckoutCount }) {
         <FilterSection
           title="Filter by Brand"
           filters={filtersByBrand}
+          loading={loadingProducts}
           error={productsError}
           activeFilter={activeFilter}
           onFilterChange={onFilterChange}
@@ -127,9 +93,9 @@ function ProductList({ updateCheckoutCount }) {
             {errMsg} Please refresh the page or try again later.
           </p>
         )}
-        {loading && <Loader message="Loading product list..." />}
+        {loadingProducts && <Loader message="Loading product list..." />}
         <div className="product-list-product-wrapper">
-          {!loading && !productsError && filteredList.length > 0 ? (
+          {!loadingProducts && !productsError && filteredList.length > 0 ? (
             filteredList.map((product) => (
               <Product
                 key={product.id}
@@ -137,7 +103,7 @@ function ProductList({ updateCheckoutCount }) {
                 addItemToCheckout={addItemToCheckout}
               />
             ))
-          ) : !loading && !productsError && !departmentsError ? (
+          ) : !loadingProducts && !productsError && !departmentsError ? (
             <p className="product-list-message">
               There are no products that match your filters. Please clear some
               filters to see more producs.

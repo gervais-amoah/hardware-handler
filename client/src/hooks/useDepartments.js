@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllDepartments } from "../services/departmentApi";
 import { FETCH_DEPARTMENT_DATA_ERROR } from "../constants/constants";
 
-function useDepartments() {
+export function useDepartments() {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,5 +30,3 @@ function useDepartments() {
 
   return [departments, [loading, error]];
 }
-
-export { useDepartments };
