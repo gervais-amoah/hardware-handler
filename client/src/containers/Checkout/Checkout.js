@@ -8,6 +8,7 @@ import {
   PRODUCT_REMOVED_FROM_CHECKOUT_SUCCESS,
   REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
 } from "../../constants/constants";
+import { CheckoutFunctionContext } from "../../context/CheckoutFunctionContext";
 import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
 import * as checkoutApi from "../../services/checkoutApi";
 import "./Checkout.css";
@@ -60,13 +61,13 @@ function Checkout() {
                 <div>Update Checkout</div>
               </div>
               <ul className="checkout-list-wrapper">
-                {checkoutItemsContext.checkoutItems.map((item) => (
-                  <CheckoutItem
-                    key={item.id}
-                    item={item}
-                    removeItemFromCheckout={removeItemFromCheckout}
-                  />
-                ))}
+                <CheckoutFunctionContext.Provider
+                  value={{ removeItemFromCheckout }}
+                >
+                  {checkoutItemsContext.checkoutItems.map((item) => (
+                    <CheckoutItem key={item.id} item={item} />
+                  ))}
+                </CheckoutFunctionContext.Provider>
               </ul>
             </div>
           )}
