@@ -8,7 +8,6 @@ import Navbar from "../Navbar/Navbar";
 import ProductForm from "../ProductForm/ProductForm";
 import ProductList from "../ProductList/ProductList";
 import "./App.css";
-// import { FETCH_CHECKOUT_COUNT_ERROR } from "../../constants/constants";
 import { useCheckout } from "../../hooks/useCheckout";
 
 function App() {
