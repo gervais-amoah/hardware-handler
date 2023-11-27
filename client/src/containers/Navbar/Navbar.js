@@ -24,13 +24,12 @@ const Navbar = () => {
           Add New Products
         </NavLink>
         <NavLink className="navbar-link" exact="true" to="/checkout">
-          Checkout
           <FontAwesomeIcon className="navbar-icon" icon={faShoppingCart} />
-          {checkoutItemsContext.checkoutCount > 0 ? (
-            <p className="navbar-checkout-count">
-              : {checkoutItemsContext.checkoutCount}
-            </p>
-          ) : null}
+          <p className="navbar-checkout-count">
+            {checkoutItemsContext.checkoutCount > 0
+              ? `Checkout: ${checkoutItemsContext.checkoutCount}`
+              : "Checkout"}
+          </p>
         </NavLink>
       </span>
     </nav>
