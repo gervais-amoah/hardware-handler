@@ -15,8 +15,8 @@ import * as checkoutApi from "../../services/checkoutApi";
 import "./ProductList.css";
 
 function ProductList() {
-  const [errMsg, setErrMsg] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
+  const [errMsg, setErrMsg] = useState("");
 
   const checkoutItemsContext = useContext(CheckoutItemsContext);
 
