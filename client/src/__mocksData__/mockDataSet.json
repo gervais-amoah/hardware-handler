@@ -48,9 +48,13 @@
       }
     ],
     [
-      { "name": "Gnome Gardening", "value": "Gnome Gardening" },
-      { "name": "SL", "value": "SL" },
-      { "name": "Swirl Pool", "value": "Swirl Pool" }
+      {
+        "id": "Gnome Gardening",
+        "name": "Gnome Gardening",
+        "value": "Gnome Gardening"
+      },
+      { "id": "SL", "name": "SL", "value": "SL" },
+      { "id": "Swirl Pool", "name": "Swirl Pool", "value": "Swirl Pool" }
     ],
     [false, null]
   ]
