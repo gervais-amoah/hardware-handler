@@ -73,8 +73,18 @@ describe("Product List component", () => {
       await userEvent.click(addBtn);
 
       expect(mockAddItemToCheckout).toHaveBeenCalledWith(
-        dataSet.productsData[0]
+        dataSet.productsData[0][0]
       );
+    });
+
+    it("should filter products displayed on page when filters are checked and unchecked", async () => {
+      render(<ProductList />);
+      const checkboxes = screen.getAllByRole("checkbox");
+      expect(await screen.findAllByText(/description/i)).toHaveLength(4);
+      userEvent.click(checkboxes[0]);
+      expect(await screen.findAllByText(/description/i)).toHaveLength(2);
+      userEvent.click(checkboxes[0]);
+      expect(await screen.findAllByText(/description/i)).toHaveLength(4);
     });
   });
 
