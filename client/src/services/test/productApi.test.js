@@ -8,7 +8,7 @@ import {
 } from "../../constants/constants";
 import * as productApi from "../productApi";
 
-describe("Testing the productApi", () => {
+describe("Testing the productApi service", () => {
   let mock;
   beforeEach(() => (mock = new MockAdapter(axios)));
 

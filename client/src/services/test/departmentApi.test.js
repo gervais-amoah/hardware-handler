@@ -4,7 +4,7 @@ import dataSet from "../../__mocksData__/mockDataSet.json";
 import * as departmentApi from "../departmentApi";
 import { FETCH_DEPARTMENT_DATA_ERROR } from "../../constants/constants";
 
-describe("Testing the departmentApi", () => {
+describe("Testing the departmentApi service", () => {
   let mock;
   beforeEach(() => (mock = new MockAdapter(axios)));
 
