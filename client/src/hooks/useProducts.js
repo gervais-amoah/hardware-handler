@@ -7,7 +7,7 @@ export function useProducts() {
   const [products, setProducts] = useState([]);
   const [productsFilteredByBrand, setProductsFilteredByBrand] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [productsError, setProductsError] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -21,12 +21,12 @@ export function useProducts() {
 
           setProducts(allProducts);
           setProductsFilteredByBrand(filteredByBrand);
-          setProductsError(false);
+          setError(false);
         } else {
-          setProductsError(allProducts);
+          setError(allProducts);
         }
       } catch (error) {
-        setProductsError(error.message);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -35,5 +35,5 @@ export function useProducts() {
     fetchData();
   }, []);
 
-  return [products, productsFilteredByBrand, [loading, productsError]];
+  return [products, productsFilteredByBrand, [loading, error]];
 }
