@@ -57,5 +57,25 @@
       { "id": "Swirl Pool", "name": "Swirl Pool", "value": "Swirl Pool" }
     ],
     [false, null]
+  ],
+  "checkout": [
+    {
+      "brand": "Gnome Gardening",
+      "departmentId": 45,
+      "description": "A trowel above all others.",
+      "productId": 1,
+      "name": "Polka Dot Trowel",
+      "retailPrice": 999,
+      "quantity": 2
+    },
+    {
+      "brand": "Swirl Pool",
+      "departmentId": 56,
+      "description": "Clothes have never been so clean, and a washer has never looked so stylish cleaning them.",
+      "productId": 4,
+      "name": "Matte Black Connected Washing Machine",
+      "retailPrice": 45050,
+      "quantity": 4
+    }
   ]
 }

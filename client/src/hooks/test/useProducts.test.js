@@ -19,7 +19,7 @@ describe("the useProducts Hook", () => {
 
   afterEach(() => jest.resetAllMocks());
 
-  it("should return a list of products and filters br brand when the product API r4enturns", async () => {
+  it("should return a list of products and filters by brand when the product API returns", async () => {
     const { result } = await renderUseProductsHook();
     const [products, filteredByBrand, [loading, error]] = result.current;
 
