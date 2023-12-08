@@ -1,9 +1,11 @@
-import React from 'react';
-import { formatPrice } from '../../helpers/formatPrice';
-import './CheckoutItem.css';
+import React, { useContext } from "react";
+import { CheckoutFunctionContext } from "../../context/CheckoutFunctionContext";
+import { formatPrice } from "../../helpers/formatPrice";
+import "./CheckoutItem.css";
 
-const CheckoutItem = ({ item, removeItemFromCheckout }) => {
+const CheckoutItem = ({ item }) => {
   const { name, brand, description, retailPrice } = item;
+  const checkoutFunctionContext = useContext(CheckoutFunctionContext);
 
   return (
     <li className="checkout-item">
@@ -23,7 +25,9 @@ const CheckoutItem = ({ item, removeItemFromCheckout }) => {
       <div>
         <button
           className="primary"
-          onClick={() => removeItemFromCheckout(item.id)}
+          onClick={() =>
+            checkoutFunctionContext.removeItemFromCheckout(item.id)
+          }
         >
           Remove Product from Checkout
         </button>

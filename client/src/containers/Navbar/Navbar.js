@@ -1,11 +1,13 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import { faShoppingCart, faTools } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTools, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-import { FETCH_CHECKOUT_COUNT_ERROR } from "../../constants/constants";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
 import "./Navbar.css";
 
-const Navbar = ({ checkoutCount }) => {
+const Navbar = () => {
+  const checkoutItemsContext = useContext(CheckoutItemsContext);
+
   return (
     <nav className="navbar">
       <div className="navbar-home-link">
@@ -22,11 +24,12 @@ const Navbar = ({ checkoutCount }) => {
           Add New Products
         </NavLink>
         <NavLink className="navbar-link" exact="true" to="/checkout">
-          Checkout
           <FontAwesomeIcon className="navbar-icon" icon={faShoppingCart} />
-          {checkoutCount !== FETCH_CHECKOUT_COUNT_ERROR && checkoutCount > 0 ? (
-            <p className="navbar-checkout-count">: {checkoutCount}</p>
-          ) : null}
+          <p className="navbar-checkout-count">
+            {checkoutItemsContext.checkoutCount > 0
+              ? `Checkout: ${checkoutItemsContext.checkoutCount}`
+              : "Checkout"}
+          </p>
         </NavLink>
       </span>
     </nav>

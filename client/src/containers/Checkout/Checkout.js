@@ -1,70 +1,59 @@
-import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import CheckoutItem from '../../components/CheckoutItem/CheckoutItem';
-import Loader from '../../components/Loader/Loader';
+import React, { useContext, useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
+import CheckoutItem from "../../components/CheckoutItem/CheckoutItem";
+import Loader from "../../components/Loader/Loader";
 import {
   FETCH_CHECKOUT_PRODUCTS_ERROR,
-  REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
   PRODUCT_REMOVED_FROM_CHECKOUT_SUCCESS,
-} from '../../constants/constants';
-import * as checkoutApi from '../../services/checkoutApi';
-import './Checkout.css';
+  REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
+} from "../../constants/constants";
+import { CheckoutFunctionContext } from "../../context/CheckoutFunctionContext";
+import { CheckoutItemsContext } from "../../context/CheckoutItemsContext";
+import * as checkoutApi from "../../services/checkoutApi";
+import "./Checkout.css";
 
-class Checkout extends Component {
-  constructor(props) {
-    super(props);
+function Checkout() {
+  const [loading, setLoading] = useState(true);
 
-    this.state = {
-      checkoutItems: [],
-      loading: true,
-      error: false,
-    };
-  }
+  const checkoutItemsContext = useContext(CheckoutItemsContext);
 
-  async componentDidMount() {
-    const checkoutItems = await checkoutApi.getAllCheckoutItems();
-    if (checkoutItems !== FETCH_CHECKOUT_PRODUCTS_ERROR) {
-      this.setState({ checkoutItems, loading: false, error: false });
-    } else {
-      this.setState({ loading: false, error: true });
-    }
-  }
+  useEffect(() => {
+    if (checkoutItemsContext.checkoutCount > 0 || checkoutItemsContext.error)
+      setLoading(false);
+  }, [checkoutItemsContext.checkoutCount, checkoutItemsContext.error]);
 
-  removeItemFromCheckout = async (id) => {
+  async function removeItemFromCheckout(id) {
+    setLoading(true);
+
     const remainingCheckoutItems = await checkoutApi.removeProductFromCheckout(
-      id,
+      id
     );
+
     if (remainingCheckoutItems !== REMOVE_PRODUCT_FROM_CHECKOUT_ERROR) {
-      this.setState({
-        checkoutItems: remainingCheckoutItems,
-        loading: false,
-        error: false,
-      });
-      this.props.updateCheckoutCount();
+      checkoutItemsContext.setCheckoutItems(remainingCheckoutItems);
+      checkoutItemsContext.updateCheckoutCount();
       toast.success(PRODUCT_REMOVED_FROM_CHECKOUT_SUCCESS);
     } else {
       toast.error(remainingCheckoutItems);
-      this.setState({ loading: false, error: true });
     }
-  };
 
-  render() {
-    const { checkoutItems, loading, error } = this.state;
-    const { removeItemFromCheckout } = this;
+    setLoading(false);
+  }
 
-    return (
+  return (
+    <div>
+      <h1 className="checkout-title">Checkout Page</h1>
       <div>
-        <h1 className="checkout-title">Checkout Page</h1>
-        <div>
-          {loading ? <Loader message="Fetching items to checkout..." /> : null}
-          {error ? (
-            <p className="checkout-message">
-              {FETCH_CHECKOUT_PRODUCTS_ERROR} Please refresh the page or try
-              again later.
-            </p>
-          ) : null}
-          {!loading & !error && checkoutItems.length ? (
+        {loading && <Loader message="Fetching items to checkout..." />}
+        {checkoutItemsContext.error && (
+          <p className="checkout-message">
+            {FETCH_CHECKOUT_PRODUCTS_ERROR} Please refresh the page or try again
+            later.
+          </p>
+        )}
+        {!loading & !checkoutItemsContext.error &&
+          checkoutItemsContext.checkoutCount && (
             <div>
               <div className="checkout-header">
                 <div>Product Information</div>
@@ -72,17 +61,19 @@ class Checkout extends Component {
                 <div>Update Checkout</div>
               </div>
               <ul className="checkout-list-wrapper">
-                {checkoutItems.map((item) => (
-                  <CheckoutItem
-                    key={item.id}
-                    item={item}
-                    removeItemFromCheckout={removeItemFromCheckout}
-                  />
-                ))}
+                <CheckoutFunctionContext.Provider
+                  value={{ removeItemFromCheckout }}
+                >
+                  {checkoutItemsContext.checkoutItems.map((item) => (
+                    <CheckoutItem key={item.id} item={item} />
+                  ))}
+                </CheckoutFunctionContext.Provider>
               </ul>
             </div>
-          ) : null}
-          {!loading && !error && !checkoutItems.length ? (
+          )}
+        {!loading &&
+          !checkoutItemsContext.error &&
+          !checkoutItemsContext.checkoutCount && (
             <p className="checkout-message">
               The checkout is currently empty. Add some items from the&nbsp;
               <NavLink className="page-link" to="/my-products">
@@ -90,11 +81,10 @@ class Checkout extends Component {
               </NavLink>
               &nbsp;page.
             </p>
-          ) : null}
-        </div>
+          )}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Checkout;

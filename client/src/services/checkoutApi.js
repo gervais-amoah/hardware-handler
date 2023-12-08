@@ -1,32 +1,20 @@
-import axios from 'axios';
+import axios from "axios";
 import {
-  FETCH_CHECKOUT_COUNT_ERROR,
-  FETCH_CHECKOUT_PRODUCTS_ERROR,
-  REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
   ADD_PRODUCT_TO_CHECKOUT_ERROR,
-  PRODUCT_ALREADY_IN_CHECKOUT_ERROR,
-  PRODUCT_ADDED_TO_CHECKOUT_SUCCESS,
+  FETCH_CHECKOUT_PRODUCTS_ERROR,
   PRODUCT_ADDED_TO_CHECKOUT_ERROR,
-} from '../constants/constants';
+  PRODUCT_ADDED_TO_CHECKOUT_SUCCESS,
+  PRODUCT_ALREADY_IN_CHECKOUT_ERROR,
+  REMOVE_PRODUCT_FROM_CHECKOUT_ERROR,
+} from "../constants/constants";
 
 export const getAllCheckoutItems = async () => {
   try {
-    const { data } = await axios.get('/checkout');
+    const { data } = await axios.get("/checkout");
     return data;
   } catch (err) {
     console.error(err);
     const errMsg = FETCH_CHECKOUT_PRODUCTS_ERROR;
-    return errMsg;
-  }
-};
-
-export const getCheckoutCount = async () => {
-  try {
-    const { data } = await axios.get('/checkout');
-    return data.length;
-  } catch (err) {
-    console.error(err);
-    const errMsg = FETCH_CHECKOUT_COUNT_ERROR;
     return errMsg;
   }
 };
@@ -69,7 +57,7 @@ export const removeProductFromCheckout = async (id) => {
     const existingCheckoutItems = await getAllCheckoutItems();
     await axios.delete(`/checkout/${id}`);
     const remainingCheckoutItems = existingCheckoutItems.filter(
-      (item) => item.id !== id,
+      (item) => item.id !== id
     );
     return remainingCheckoutItems;
   } catch (err) {

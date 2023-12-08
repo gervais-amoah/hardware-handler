@@ -1,8 +1,11 @@
-import React from 'react';
-import { formatPrice } from '../../helpers/formatPrice';
-import './Product.css';
+import React, { useContext } from "react";
+import { CheckoutFunctionContext } from "../../context/CheckoutFunctionContext";
+import { formatPrice } from "../../helpers/formatPrice";
+import "./Product.css";
 
-const Product = ({ product, addItemToCheckout }) => {
+const Product = ({ product }) => {
+  const checkoutFunctionContext = useContext(CheckoutFunctionContext);
+
   return (
     <div key={product.id} className="product">
       <div>
@@ -17,7 +20,11 @@ const Product = ({ product, addItemToCheckout }) => {
         <dd>{product.description}</dd>
       </dl>
       <div className="product-button-wrapper">
-        <button className="primary" onClick={() => addItemToCheckout(product)}>
+        <button
+          className="primary"
+          type="submit"
+          onClick={() => checkoutFunctionContext.addItemToCheckout(product)}
+        >
           Add to Checkout
         </button>
       </div>
